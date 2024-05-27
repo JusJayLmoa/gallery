@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  body {
+    zoom: 170%; 
+    font-family: 'Fredoka', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #D0EAFF;
+    color: #333; 
+  }
+
+  h1 {
+    text-align: center;
+    margin-top: 30px; 
+  }
+
+  .navbar {
+    overflow: hidden;
+    background-color: #9DC9ED;
+    animation: slide-navbar 1s ease-out;
+    height: 80px; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .navbar-logo {
+    width: 60px; 
+    height: auto;
+  }
+
+  .navbar h2 {
+    margin: 0;
+    padding: 10px;
+    text-align: center;
+    color: #333;
+    font-size: 28px; 
+  }
+
+  .search-bar {
+    border: 2px solid #333;
+    border-radius: 20px;
+    padding: 5px 10px;
+    width: 200px;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    grid-gap: 20px;
+    padding: 20px;
+  }
+
+  .gallery-item {
+    display: flex;
+    justify-content: center;
+  }
+
+  .card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 5px solid #5D83A2; 
+    background-color: #9DC9ED; 
+    width: 300px; 
+    height: 400px;
+  }
+
+  .card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .card img {
+    width:93%; 
+    height: 70%; 
+    border-radius: 10px;
+    display: block; 
+    margin: 11px auto 0; 
+  }
+  .info {
+    padding: 20px;
+    text-align: left; 
+  }
+
+  .info h2 {
+    margin-bottom: 10px;
+    margin-top: 0; 
+  }
+
+  .info p {
+    margin: 0;
+  }
+  
+  .upload-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .upload-container input[type="text"],
+  .upload-container input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .upload-container input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .upload-container input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+<div class="navbar">
+  <img src="plane.svg" alt="Plane Logo" class="navbar-logo">
+  <h2>OUR PICTURES</h2>
+  <input type="text" placeholder="Search" class="search-bar" id="search-bar">
+</div>
+<div class="upload-container">
+  <form id="upload-form">
+    <input type="file" name="image" id="image-upload" accept="image/*">
+    <input type="text" name="date" id="date-input" placeholder="Date (e.g., January 1, 2024)">
+    <input type="text" name="description" id="description-input" placeholder="Description">
+    <input type="submit" value="Upload">
+  </form>
+</div>
+<div class="gallery" id="gallery">
+  
+</div>
+
+<script>
+ const imagesKey = 'galleryImages';
+
+// Function to get images from session storage
+function getImagesFromSessionStorage() {
+  const storedImages = sessionStorage.getItem(imagesKey);
+  return storedImages ? JSON.parse(storedImages) : [];
+}
+
+// Function to save images to session storage
+function saveImagesToSessionStorage(images) {
+  sessionStorage.setItem(imagesKey, JSON.stringify(images));
+}
+
+let images = getImagesFromSessionStorage();
+
+// Additional images to be added
+const additionalImages = [
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244535194585796689/IMG_3839.jpg?ex=66557738&is=665425b8&hm=9e0540f10def6636c598d6779a2888a298624f228c29778d96685e6adfb8138b&', date: 'September 26, 2022', description: 'First movie together on Discord!' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244537935341162516/IMG_3840.jpg?ex=665579c6&is=66542846&hm=ff1c6ff286584a821d989af6851ef26ebfc7b399ba9a61121b0c7c75c6f1138b&', date: 'September 30, 2022', description: 'The long-awaited confession.' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244540101460099092/IMG_3841.jpg?ex=66557bca&is=66542a4a&hm=629d49ba3055a540b3505625fd985e7db45e4fa0e31da3784abb8c44b6a391df&', date: 'October 17,  2022', description: 'First meet after how many years' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244542153443508284/IMG_3842.jpg?ex=66557db3&is=66542c33&hm=0c07904a3e6354a3f115b2e13aa61f0cdd03716d520bd5845942803db9aeae47&', date: 'October 21,  2022', description: 'The mandatory pagpunta every time he’s with his friends' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244543426939191366/IMG_3843.jpg?ex=66557ee3&is=66542d63&hm=879b6b75d9118eb4abf3e24148a462a15b4423ad1141629d6d878de2d48769e0&', date: 'November 14 ,  2022', description: 'Picture after kaming sundan sa bahay hanggang cathedral' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244544504552362034/IMG_3844.jpg?ex=66557fe4&is=66542e64&hm=806bd7da7c3d5c485340487d225a38ec51c56faba5d56d4f409d6bcd73613ded&', date: 'December 2 ,  2022', description: 'Went to his school to watch his performance' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244545279177523254/IMG_3845.jpg?ex=6655809d&is=66542f1d&hm=43f8ff401c540d2b907fc5126f165b7b14f0107532ec7202ffd20e1c486739c4&', date: 'December 17 ,  2022', description: 'Family day picture' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244545952551796736/IMG_3846.jpg?ex=6655813d&is=66542fbd&hm=297af77a0e6a5674eab033527a28faeb4fcb67caa1064d4fed3efbbe9192b98c&', date: 'December 22 ,  2022', description: 'First concert together and last call before the Christmas' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244584642451996757/IMG_0681.jpg?ex=6655a546&is=665453c6&hm=22686f8d06d5706857794e73a9e49e9b8b04d6ef846213f24cd7af27535d51e7& ', date: ' November 23 , 2023', description: 'this little boy is patiently waiting' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244585269475283016/IMG_9142.jpg?ex=6655a5db&is=6654545b&hm=4f6ecc636181c2ed7e8a7ff0c9503d3774ec7c7a01ed32c56bde68cfb15316e0& ', date: ' November 12 , 2023', description: 'First pic after mass' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244586966784151602/IMG_1663.jpg?ex=6655a770&is=665455f0&hm=afaf9aef64cd9fc883f15436be0fecc36b0ede58e7075db0e70dc8eedc884def& ', date: ' December 09 , 2023', description: 'Who are we copying here?' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244586113092423781/IMG_2282.jpg?ex=6655a6a4&is=66545524&hm=2c61e005657d144782d7666f5d27921c47e491ed9d388cf9cb1d6f0d736b5a19& ', date: ' December 15 , 2023', description: 'Forgiveness' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244587529357889638/IMG_3404.jpg?ex=6655a7f6&is=66545676&hm=38f79b2445441a7a98622b05023500247026e14c28c41f49102ab7f9b067c3c4& ', date: ' December 19 , 2023', description: 'Your mama is calling!!' },
+  { url: 'https://media.discordapp.net/attachments/1069213354322829403/1244587914915090444/IMG_3747.jpg?ex=6655a852&is=665456d2&hm=4e24f85d0bd6968861aa1a8c96e0f1c0555e78b8defcb635edda70702460a5c9& ', date: ' December 22 , 2023', description: 'A pic before xmas' },
+];
+
+// Merge the 'images' array with the additional images
+if (images.length === 0) {
+  images = [...additionalImages];
+}
+
+// Sort images by date
+images.sort((a, b) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return dateA - dateB;
+});
+
+// Function to add images to the gallery
+async function addImagesToGallery() {
+  const gallery = document.getElementById('gallery');
+  const searchBar = document.getElementById('search-bar');
+
+  images.forEach(image => {
+    const galleryItem = document.createElement('div');
+    galleryItem.classList.add('gallery-item');
+
+    const card = document.createElement('div');
+    card.classList.add('card');
+
+    const img = document.createElement('img');
+    img.src = image.url;
+    img.alt = 'Image';
+
+    const info = document.createElement('div');
+    info.classList.add('info');
+    info.innerHTML = `<h2>${image.date}</h2><p>${image.description}</p>`;
+
+    card.appendChild(img);
+    card.appendChild(info);
+    galleryItem.appendChild(card);
+    gallery.appendChild(galleryItem);
+  });
+
+  searchBar.addEventListener('input', () => {
+    const searchTerm = searchBar.value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+      const title = card.querySelector('h2').textContent.toLowerCase();
+      if (title.includes(searchTerm)) {
+        card.parentElement.style.display = 'block';
+      } else {
+        card.parentElement.style.display = 'none';
+      }
+    });
+  });
+}
+
+addImagesToGallery();
+
+const uploadForm = document.getElementById('upload-form');
+uploadForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(uploadForm);
+  const imageUrl = formData.get('image');
+  const date = formData.get('date');
+  const description = formData.get('description');
+
+  const newImage = {
+    url: URL.createObjectURL(imageUrl),
+    date,
+    description
+  };
+
+  images.push(newImage);
+  images.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB;
+  });
+
+  saveImagesToSessionStorage(images);
+
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  addImagesToGallery();
+
+  uploadForm.reset();
+});
+
+</script>
+</body>
+</html>
